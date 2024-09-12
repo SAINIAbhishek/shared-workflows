@@ -1,0 +1,106 @@
+name: Security audit
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        description: "The version of Node.js to install"
+        required: true
+        type: string
+        default: "latest"
+      lock-file:
+        description: "The path to the lock file for caching"
+        required: true
+        type: string
+        default: "package-lock.json"
+      cache-path:
+        description: "The path to the cache directory"
+        required: true
+        type: string
+        default: "node_modules"
+      cache-key-prefix:
+        description: "Prefix for the cache key"
+        required: true
+        type: string
+        default: "node"
+      continue-on-error:
+        description: "Whether to continue the workflow on error"
+        required: true
+        type: boolean
+        default: true
+      run-cmd:
+        description: "Command to run for auditing or other tasks"
+        required: true
+        type: string
+        default: "npm audit --audit-level=high"
+      working-directory:
+        description: "Working directory path"
+        required: true
+        type: string
+        default: "."
+
+  workflow_dispatch:
+    inputs:
+      node-version:
+        description: "The version of Node.js to install"
+        required: true
+        type: string
+        default: "latest"
+      lock-file:
+        description: "The path to the lock file for caching"
+        required: true
+        type: string
+        default: "package-lock.json"
+      cache-path:
+        description: "The path to the cache directory"
+        required: true
+        type: string
+        default: "node_modules"
+      cache-key-prefix:
+        description: "Prefix for the cache key"
+        required: true
+        type: string
+        default: "node"
+      continue-on-error:
+        description: "Whether to continue the workflow on error"
+        required: true
+        type: boolean
+        default: true
+      run-cmd:
+        description: "Command to run for auditing or other tasks"
+        required: true
+        type: string
+        default: "npm audit --audit-level=high"
+      working-directory:
+        description: "Working directory path"
+        required: true
+        type: string
+        default: "."
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout Code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: Setup Node environment with the specified version
+      - name: Setup Node 
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ inputs['node-version'] }}
+
+      # Step 3: Restore cached Node.js modules based on the lock file hash
+      - name: Restore Node Modules Cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ inputs['cache-path'] }} # Path for cache directory (e.g., node_modules)
+          key: ${{ runner.os }}-${{ inputs['cache-key-prefix'] }}-${{ hashFiles(inputs['lock-file']) }}
+          restore-keys: ${{ runner.os }}-${{ inputs['cache-key-prefix'] }}-
+
+      # Step 4: Run npm audit or other specified command
+      - name: Run audit
+        run: ${{ inputs['run-cmd'] }} # Use the run command from inputs (default: npm audit)
+        working-directory: ${{ inputs['working-directory'] }} # Run in the specified working directory
+        continue-on-error: ${{ inputs['continue-on-error'] }} # Allow customizable continue on error behavior
