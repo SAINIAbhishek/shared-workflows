@@ -1,0 +1,62 @@
+name: Cache and Install Dependencies
+
+on:
+  # Allows the workflow to be called from another workflow with inputs
+  workflow_call:
+    inputs:
+      node-version:
+        description: "The version of Node.js to install"
+        required: true
+        type: string
+      lock-file:
+        description: "The path to the lock file for caching"
+        required: true
+        type: string
+
+  # Allows manual triggering of the workflow
+  workflow_dispatch:
+    inputs:
+      node-version:
+        description: "The version of Node.js to install"
+        required: true
+        type: string
+        default: "20.17.0" # Default Node.js version if none is provided
+      lock-file:
+        description: "The path to the lock file for caching"
+        required: true
+        type: string
+        default: "package-lock.json" # Default lock file if none is provided
+
+jobs:
+  manage:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the code from the repository
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Set up Node.js environment with the specified version
+      - name: Setup Node.js
+        uses: SAINIAbhishek/shared-workflows/.github/workflows/setup-node.yml@main
+        with:
+          node-version: ${{ inputs.node-version }}
+
+      # Restore cached Node.js modules based on the lock file hash
+      - name: Restore Node.js Modules Cache
+        uses: actions/cache@v3
+        with:
+          path: '**/node_modules' # Cache path for node_modules in all directories
+          key: ${{ runner.os }}-node-${{ hashFiles(inputs.lock-file) }} # Unique cache key based on lock file hash
+          restore-keys: ${{ runner.os }}-node- # Restore from the fallback cache if the exact key is not found
+
+      # Install dependencies using npm ci
+      - name: Install Dependencies
+        run: npm ci
+        working-directory: ${{ github.workspace }} # Run in the root of the repository
+
+      # Save the Node.js modules cache for future use
+      - name: Save Node.js Modules Cache
+        uses: actions/cache@v3
+        with:
+          path: '**/node_modules' # Cache path for node_modules in all directories
+          key: ${{ runner.os }}-node-${{ hashFiles(inputs.lock-file) }} # Cache key based on lock file hash
