@@ -5,10 +5,10 @@ on:
   workflow_call:
     inputs:
       node-version:
-        description: "The version of Node.js to install"
+        description: "The version of Node to install"
         required: true
         type: string
-        default: "20.17.0" # Default Node.js version if none is provided
+        default: "latest" # Default Node version if none is provided
       lock-file:
         description: "The path to the lock file for caching"
         required: true
@@ -34,10 +34,10 @@ on:
   workflow_dispatch:
     inputs:
       node-version:
-        description: "The version of Node.js to install"
+        description: "The version of Node to install"
         required: true
         type: string
-        default: "20.17.0" # Default Node.js version if none is provided
+        default: "latest" # Default Node version if none is provided
       lock-file:
         description: "The path to the lock file for caching"
         required: true
@@ -67,14 +67,14 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # Set up Node.js environment with the specified version
-      - name: Setup Node.js
+      # Setup Node environment with the specified version
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ inputs['node-version'] }} # Use the specified Node.js version
+          node-version: ${{ inputs['node-version'] }} # Use the specified Node version
 
-      # Restore cached Node.js modules based on the lock file hash
-      - name: Restore Node.js Modules Cache
+      # Restore cached modules based on the lock file hash
+      - name: Restore modules Cache
         uses: actions/cache@v3
         with:
           path: ${{ inputs['cache-path'] }} # Path for the cache directory
@@ -91,8 +91,8 @@ jobs:
         run: npm ci
         working-directory: ${{ inputs['working-directory'] }} # Run in the specified working directory
 
-      # Save the Node.js modules cache for future use
-      - name: Save Node.js Modules Cache
+      # Save the modules cache for future use
+      - name: Save modules Cache
         uses: actions/cache@v3
         with:
           path: ${{ inputs['cache-path'] }} # Path for the cache directory

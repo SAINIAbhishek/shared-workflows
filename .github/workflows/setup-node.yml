@@ -7,7 +7,7 @@ on:
       node-version:
         description: "The version of Node.js to install"
         type: string
-        default: "20.17.0" # Default Node.js version if none is provided
+        default: "latest" # Default Node.js version if none is provided
 
   # Allows this workflow to be triggered manually
   workflow_dispatch:
@@ -15,7 +15,7 @@ on:
       node-version:
         description: "The version of Node.js to install"
         type: string
-        default: "20.17.0" # Default Node.js version if none is provided
+        default: "latest" # Default Node.js version if none is provided
 
 jobs:
   setup-node:
@@ -25,8 +25,8 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # Setup Node.js with the specified version
-      - name: Setup Node.js
+      # Setup Node env with the specified version
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: ${{ inputs['node-version'] }} # Use provided or default version
