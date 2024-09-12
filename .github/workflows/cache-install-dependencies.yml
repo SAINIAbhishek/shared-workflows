@@ -8,10 +8,12 @@ on:
         description: "The version of Node.js to install"
         required: true
         type: string
+        default: "20.17.0" # Default Node.js version if none is provided
       lock-file:
         description: "The path to the lock file for caching"
         required: true
         type: string
+        default: "package-lock.json" # Default lock file if none is provided
 
   # Allows manual triggering of the workflow
   workflow_dispatch:
