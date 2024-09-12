@@ -1,7 +1,7 @@
 name: Cache and Install Dependencies
 
 on:
-  # Allows the workflow to be called from another workflow with inputs
+  # Allows the workflow to be triggered by another workflow with inputs
   workflow_call:
     inputs:
       node-version:
@@ -15,7 +15,7 @@ on:
         type: string
         default: "package-lock.json" # Default lock file if none is provided
 
-  # Allows manual triggering of the workflow
+  # Allows manual triggering of the workflow from the GitHub Actions UI
   workflow_dispatch:
     inputs:
       node-version:
@@ -30,7 +30,7 @@ on:
         default: "package-lock.json" # Default lock file if none is provided
 
 jobs:
-  manage:
+  cache-install-dependencies:
     runs-on: ubuntu-latest
     steps:
       # Checkout the code from the repository
@@ -39,16 +39,16 @@ jobs:
 
       # Set up Node.js environment with the specified version
       - name: Setup Node.js
-        uses: SAINIAbhishek/shared-workflows/.github/workflows/setup-node.yml@main
+        uses: actions/setup-node@v3
         with:
-          node-version: ${{ inputs.node-version }}
+          node-version: ${{ inputs['node-version'] }} # Use the specified Node.js version
 
       # Restore cached Node.js modules based on the lock file hash
       - name: Restore Node.js Modules Cache
         uses: actions/cache@v3
         with:
-          path: '**/node_modules' # Cache path for node_modules in all directories
-          key: ${{ runner.os }}-node-${{ hashFiles(inputs.lock-file) }} # Unique cache key based on lock file hash
+          path: "**/node_modules" # Cache path for node_modules in all directories
+          key: ${{ runner.os }}-node-${{ hashFiles(inputs['lock-file']) }} # Unique cache key based on lock file hash
           restore-keys: ${{ runner.os }}-node- # Restore from the fallback cache if the exact key is not found
 
       # Install dependencies using npm ci
@@ -60,5 +60,5 @@ jobs:
       - name: Save Node.js Modules Cache
         uses: actions/cache@v3
         with:
-          path: '**/node_modules' # Cache path for node_modules in all directories
-          key: ${{ runner.os }}-node-${{ hashFiles(inputs.lock-file) }} # Cache key based on lock file hash
+          path: "**/node_modules" # Cache path for node_modules in all directories
+          key: ${{ runner.os }}-node-${{ hashFiles(inputs['lock-file']) }} # Cache key based on lock file hash
