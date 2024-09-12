@@ -1,18 +1,31 @@
 name: Setup Node.js Environment
 
 on:
+  # Triggered when this workflow is called from another workflow
   workflow_call:
     inputs:
       node-version:
         description: "The version of Node.js to install"
-        type: string # Specify the type of the input
+        type: string
+        default: "20.17.0" # Default Node.js version if none is provided
+
+  # Allows this workflow to be triggered manually
+  workflow_dispatch:
+    inputs:
+      node-version:
+        description: "The version of Node.js to install"
+        type: string
         default: "20.17.0" # Default Node.js version if none is provided
 
 jobs:
   setup-node:
     runs-on: ubuntu-latest
     steps:
-      # Setup Node.js with the specified or default version
+      # Checkout the repository code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Setup Node.js with the specified version
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
