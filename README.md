@@ -33,8 +33,7 @@ jobs:
   setup-node:
     uses: <your-repo>/path/to/.github/workflows/setup-node.yml@main
     with:
-      node-version: '20.17.0' # Optional: Specify the Node.js version you want to use
-
+      node-version: "20.17.0" # Optional: Specify the Node.js version you want to use
 ```
 
 ### 2. Cache and Install Dependencies
@@ -62,9 +61,9 @@ jobs:
   cache-install-dependencies:
     uses: <your-repo>/path/to/.github/workflows/cache-install-dependencies.yml@main
     with:
-      node-version: '20.17.0' # Optional: Specify the Node.js version
-      lock-file: 'package-lock.json' # Optional: Specify the lock file path
-      cache-path: 'server/node_modules' # Optional: Specify the cache file path
-      cache-key-prefix: 'server-node' # Optional: Specify the cache key name
-
+      node-version: "20.17.0" # Optional: Specify the Node.js version
+      lock-file: "package-lock.json" # Optional: Specify the lock file path
+      cache-path: "server/node_modules" # Optional: Specify the cache file path
+      cache-key-prefix: "server-node" # Optional: Specify the cache key name
+      working-directory: "server"
 ```
