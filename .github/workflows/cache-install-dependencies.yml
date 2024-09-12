@@ -24,6 +24,11 @@ on:
         required: true
         type: string
         default: "node" # Default cache key prefix if none is provided
+      working-directory:
+        description: "Working directory path"
+        required: true
+        type: string
+        default: "." # Default working directory if none is provided
 
   # Allows manual triggering of the workflow from the GitHub Actions UI
   workflow_dispatch:
@@ -48,6 +53,11 @@ on:
         required: true
         type: string
         default: "node" # Default cache key prefix if none is provided
+      working-directory:
+        description: "Working directory path"
+        required: true
+        type: string
+        default: "." # Default working directory if none is provided
 
 jobs:
   cache-install-dependencies:
@@ -79,7 +89,7 @@ jobs:
       # Install dependencies using npm ci
       - name: Install Dependencies
         run: npm ci
-        working-directory: ${{ github.workspace }} # Run in the root of the repository
+        working-directory: ${{ inputs['working-directory'] }} # Run in the specified working directory
 
       # Save the Node.js modules cache for future use
       - name: Save Node.js Modules Cache
