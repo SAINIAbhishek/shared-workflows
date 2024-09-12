@@ -14,6 +14,16 @@ on:
         required: true
         type: string
         default: "package-lock.json" # Default lock file if none is provided
+      cache-path:
+        description: "The path to the cache directory"
+        required: true
+        type: string
+        default: "node_modules" # Default cache path if none is provided
+      cache-key-prefix:
+        description: "Prefix for the cache key"
+        required: true
+        type: string
+        default: "node" # Default cache key prefix if none is provided
 
   # Allows manual triggering of the workflow from the GitHub Actions UI
   workflow_dispatch:
@@ -28,6 +38,16 @@ on:
         required: true
         type: string
         default: "package-lock.json" # Default lock file if none is provided
+      cache-path:
+        description: "The path to the cache directory"
+        required: true
+        type: string
+        default: "node_modules" # Default cache path if none is provided
+      cache-key-prefix:
+        description: "Prefix for the cache key"
+        required: true
+        type: string
+        default: "node" # Default cache key prefix if none is provided
 
 jobs:
   cache-install-dependencies:
@@ -47,9 +67,14 @@ jobs:
       - name: Restore Node.js Modules Cache
         uses: actions/cache@v3
         with:
-          path: "**/node_modules" # Cache path for node_modules in all directories
-          key: ${{ runner.os }}-node-${{ hashFiles(inputs['lock-file']) }} # Unique cache key based on lock file hash
-          restore-keys: ${{ runner.os }}-node- # Restore from the fallback cache if the exact key is not found
+          path: ${{ inputs['cache-path'] }} # Path for the cache directory
+          # Unique cache key based on lock file hash
+          # This key is based on the hash of the package-lock.json file.
+          # If dependencies change, the hash will change and a new cache will be created.
+          key: ${{ runner.os }}-${{ inputs['cache-key-prefix'] }}-${{ hashFiles(inputs['lock-file']) }}
+          # Restore from the fallback cache if the exact key is not found
+          # If the exact key isn't found, the runner will attempt to restore from these fallback keys.
+          restore-keys: ${{ runner.os }}-${{ inputs['cache-key-prefix'] }}-
 
       # Install dependencies using npm ci
       - name: Install Dependencies
@@ -60,5 +85,5 @@ jobs:
       - name: Save Node.js Modules Cache
         uses: actions/cache@v3
         with:
-          path: "**/node_modules" # Cache path for node_modules in all directories
-          key: ${{ runner.os }}-node-${{ hashFiles(inputs['lock-file']) }} # Cache key based on lock file hash
+          path: ${{ inputs['cache-path'] }} # Path for the cache directory
+          key: ${{ runner.os }}-${{ inputs['cache-key-prefix'] }}-${{ hashFiles(inputs['lock-file']) }} # Cache key based on lock file hash

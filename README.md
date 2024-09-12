@@ -36,3 +36,35 @@ jobs:
       node-version: '20.17.0' # Optional: Specify the Node.js version you want to use
 
 ```
+
+### 2. Cache and Install Dependencies
+
+**File:** `.github/workflows/cache-install-dependencies.yml`
+
+**Description:** This workflow caches Node.js modules to speed up dependency installation and ensures that dependencies are installed consistently based on a specified lock file.
+
+**Usage:**
+
+To use this workflow in another repository, create a new workflow file in the .github/workflows directory of that repository and include the following configuration:
+
+```yaml
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  cache-install-dependencies:
+    uses: <your-repo>/path/to/.github/workflows/cache-install-dependencies.yml@main
+    with:
+      node-version: '20.17.0' # Optional: Specify the Node.js version
+      lock-file: 'package-lock.json' # Optional: Specify the lock file path
+      cache-path: 'server/node_modules' # Optional: Specify the cache file path
+      cache-key-prefix: 'server-node' # Optional: Specify the cache key name
+
+```
