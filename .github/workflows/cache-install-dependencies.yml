@@ -6,27 +6,22 @@ on:
     inputs:
       node-version:
         description: "The version of Node to install"
-        required: true
         type: string
         default: "latest" # Default Node version if none is provided
       lock-file:
         description: "The path to the lock file for caching"
-        required: true
         type: string
         default: "package-lock.json" # Default lock file if none is provided
       cache-path:
         description: "The path to the cache directory"
-        required: true
         type: string
         default: "node_modules" # Default cache path if none is provided
       cache-key-prefix:
         description: "Prefix for the cache key"
-        required: true
         type: string
         default: "node" # Default cache key prefix if none is provided
       working-directory:
         description: "Working directory path"
-        required: true
         type: string
         default: "." # Default working directory if none is provided
 
@@ -35,27 +30,22 @@ on:
     inputs:
       node-version:
         description: "The version of Node to install"
-        required: true
         type: string
         default: "latest" # Default Node version if none is provided
       lock-file:
         description: "The path to the lock file for caching"
-        required: true
         type: string
         default: "package-lock.json" # Default lock file if none is provided
       cache-path:
         description: "The path to the cache directory"
-        required: true
         type: string
         default: "node_modules" # Default cache path if none is provided
       cache-key-prefix:
         description: "Prefix for the cache key"
-        required: true
         type: string
         default: "node" # Default cache key prefix if none is provided
       working-directory:
         description: "Working directory path"
-        required: true
         type: string
         default: "." # Default working directory if none is provided
 
